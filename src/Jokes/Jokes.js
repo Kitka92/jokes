@@ -17,19 +17,34 @@ class Jokes extends Component {
 			try {
 				const config = { headers: { Accept: 'application/json' } };
 				const response = await axios.get('https://icanhazdadjoke.com/', config);
-				jokes.push(response.data);
+				jokes.push({ joke: response.data.joke, score: 0, id: response.data.id });
 			} catch (e) {
 				console.log('Something went wrong', e);
 			}
 		}
-		console.log(jokes);
 		this.setState({
 			jokes: jokes
 		});
 	};
 
+	handleVotes = (id, delta) => {
+		this.setState((st) => {
+			return {
+				jokes: st.jokes.map((j) => (j.id === id ? { ...j, score: j.score + delta } : j))
+			};
+		});
+	};
+
 	render() {
-		const jokes = this.state.jokes.map((j) => <Joke key={j.id} score={j.score} joke={j.joke} />);
+		const jokes = this.state.jokes.map((j) => (
+			<Joke
+				key={j.id}
+				score={j.score}
+				joke={j.joke}
+				upvote={this.handleVotes.bind(this, j.id, 1)}
+				downvote={this.handleVotes.bind(this, j.id, -1)}
+			/>
+		));
 		return (
 			<div className="Jokes">
 				<div className="Jokes-sidebar">

@@ -1,14 +1,19 @@
 import React, { Component } from 'react';
+import './Joke.css';
 
 class Joke extends Component {
 	render() {
 		return (
-			<div>
-				{/* <button>Up vote</button>
-				<button>Down vote</button>
-				<span>{this.props.score}</span> */}
-				<p>{this.props.joke}</p>
-				{/* <img /> */}
+			<div className="Joke">
+				<div className="Joke-buttons">
+					<i className="fas fa-arrow-up" onClick={this.props.upvote} />
+					<span className="Joke-vote">{this.props.score}</span>
+					<i className="fas fa-arrow-down" onClick={this.props.downvote} />
+				</div>
+				<div className="Joke-text">{this.props.joke}</div>
+				<div className="Joke-smiley">
+					<i className="em em-rolling_on_the_floor_laughing" />
+				</div>
 			</div>
 		);
 	}
