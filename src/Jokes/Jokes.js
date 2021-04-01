@@ -8,10 +8,17 @@ class Jokes extends Component {
 		numJokesToGet: 10
 	};
 	state = {
-		jokes: []
+		jokes: JSON.parse(localStorage.getItem('jokes')) || [],
+		loading: false
 	};
 
-	componentDidMount = async () => {
+	componentDidMount = () => {
+		if (this.state.jokes.length === 0) {
+			this.getJokes();
+		}
+	};
+
+	getJokes = async () => {
 		let jokes = [];
 		while (jokes.length < this.props.numJokesToGet) {
 			try {
@@ -22,20 +29,41 @@ class Jokes extends Component {
 				console.log('Something went wrong', e);
 			}
 		}
-		this.setState({
-			jokes: jokes
-		});
+		this.setState(
+			(st) => {
+				return {
+					jokes: [ ...st.jokes, ...jokes ],
+					loading: false
+				};
+			},
+			() => localStorage.setItem('jokes', JSON.stringify(this.state.jokes))
+		);
 	};
 
 	handleVotes = (id, delta) => {
-		this.setState((st) => {
-			return {
-				jokes: st.jokes.map((j) => (j.id === id ? { ...j, score: j.score + delta } : j))
-			};
-		});
+		this.setState(
+			(st) => {
+				return {
+					jokes: st.jokes.map((j) => (j.id === id ? { ...j, score: j.score + delta } : j))
+				};
+			},
+			() => localStorage.setItem('jokes', JSON.stringify(this.state.jokes))
+		);
+	};
+
+	addJokes = () => {
+		this.setState({ loading: true }, this.getJokes);
 	};
 
 	render() {
+		if (this.state.loading) {
+			return (
+				<div className="Jokes-spinner">
+					<i className="far fa-8x fa-laugh fa-spin" />
+					<h1 className="Jokes-title">Loading...</h1>
+				</div>
+			);
+		}
 		const jokes = this.state.jokes.map((j) => (
 			<Joke
 				key={j.id}
@@ -55,7 +83,9 @@ class Jokes extends Component {
 						alt="Funny face"
 						src="https://assets.dryicons.com/uploads/icon/svg/8927/0eb14c71-38f2-433a-bfc8-23d9c99b3647.svg"
 					/>
-					<button className="Jokes-getMore">New Jokes</button>
+					<button className="Jokes-getMore" onClick={this.addJokes}>
+						New Jokes
+					</button>
 				</div>
 
 				<div className="Jokes-jokes">{jokes}</div>
