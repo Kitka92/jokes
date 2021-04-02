@@ -97,7 +97,7 @@ class Jokes extends Component {
 						src="https://assets.dryicons.com/uploads/icon/svg/8927/0eb14c71-38f2-433a-bfc8-23d9c99b3647.svg"
 					/>
 					<button className="Jokes-getMore" onClick={this.addJokes}>
-						New Jokes
+						Fetch Jokes
 					</button>
 				</div>
 
