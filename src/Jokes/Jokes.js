@@ -76,7 +76,8 @@ class Jokes extends Component {
 				</div>
 			);
 		}
-		const jokes = this.state.jokes.map((j) => (
+		const sortedJokes = this.state.jokes.sort((a, b) => b.score - a.score);
+		const jokes = sortedJokes.map((j) => (
 			<Joke
 				key={j.id}
 				score={j.score}
